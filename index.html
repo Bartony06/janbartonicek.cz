@@ -188,6 +188,43 @@
       .wrap { padding: 0 16px; }
     }
   </style>
+
+  <!-- Cookie lišta (CookieConsent v3) a Google Consent Mode v2 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orestbida/cookieconsent@3.1.0/dist/cookieconsent.css">
+  <style>
+    #cc-main {
+      --cc-font-family: "Inter", system-ui, sans-serif;
+      --cc-btn-primary-bg: #1d4ed8;
+      --cc-btn-primary-border-color: #1d4ed8;
+      --cc-btn-primary-hover-bg: #1e3a8a;
+      --cc-btn-primary-hover-border-color: #1e3a8a;
+      --cc-btn-secondary-bg: #eff4ff;
+      --cc-btn-secondary-color: #1d4ed8;
+      --cc-btn-secondary-border-color: #eff4ff;
+      --cc-btn-secondary-hover-bg: #dbe6ff;
+      --cc-btn-secondary-hover-border-color: #dbe6ff;
+      --cc-toggle-on-bg: #1d4ed8;
+      --cc-modal-border-radius: 16px;
+      --cc-btn-border-radius: 999px;
+      --cc-link-color: #1d4ed8;
+    }
+    .footer-links { margin-top: 8px; display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }
+    .footer-links a, .footer-links button { color: var(--muted); font: inherit; background: none; border: 0; cursor: pointer; text-decoration: underline; padding: 0; }
+    .footer-links a:hover, .footer-links button:hover { color: var(--blue); }
+  </style>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('consent', 'default', {
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      analytics_storage: 'denied',
+      functionality_storage: 'granted',
+      security_storage: 'granted',
+      wait_for_update: 500
+    });
+  </script>
 </head>
 <body>
 
@@ -361,8 +398,126 @@
   </main>
 
   <footer>
-    <div class="wrap">© 2026 Jan Bartoníček</div>
+    <div class="wrap">
+      © 2026 Jan Bartoníček
+      <div class="footer-links">
+        <a href="zasady-cookies.html">Zásady cookies a ochrany soukromí</a>
+        <button type="button" data-cc="show-preferencesModal">Nastavení cookies</button>
+      </div>
+    </div>
   </footer>
 
+
+  <script src="https://cdn.jsdelivr.net/gh/orestbida/cookieconsent@3.1.0/dist/cookieconsent.umd.js"></script>
+  <script>
+/* Cookie lišta a Google Analytics pro janbartonicek.cz */
+(function () {
+  var GA_ID = 'G-KHP8GQ2MTX';
+  var gaLoaded = false;
+
+  function loadGA() {
+    if (gaLoaded) return;
+    gaLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', GA_ID);
+  }
+
+  function syncConsent() {
+    var analytics = CookieConsent.acceptedCategory('analytics');
+    var marketing = CookieConsent.acceptedCategory('marketing');
+    gtag('consent', 'update', {
+      analytics_storage: analytics ? 'granted' : 'denied',
+      ad_storage: marketing ? 'granted' : 'denied',
+      ad_user_data: marketing ? 'granted' : 'denied',
+      ad_personalization: marketing ? 'granted' : 'denied'
+    });
+    if (analytics || marketing) loadGA();
+  }
+
+  CookieConsent.run({
+    revision: 1,
+    disablePageInteraction: false,
+    cookie: { name: 'cc_cookie', expiresAfterDays: 182 },
+    guiOptions: {
+      consentModal: { layout: 'box', position: 'bottom left', equalWeightButtons: true, flipButtons: false },
+      preferencesModal: { layout: 'box', equalWeightButtons: true, flipButtons: false }
+    },
+    onFirstConsent: syncConsent,
+    onConsent: syncConsent,
+    onChange: syncConsent,
+    categories: {
+      necessary: { enabled: true, readOnly: true },
+      analytics: {
+        autoClear: { cookies: [{ name: /^_ga/ }, { name: '_gid' }] }
+      },
+      marketing: {
+        autoClear: { cookies: [{ name: /^_gcl/ }] }
+      }
+    },
+    language: {
+      default: 'cs',
+      translations: {
+        cs: {
+          consentModal: {
+            title: 'Používám cookies',
+            description: 'Nezbytné cookies potřebuji, aby web fungoval. S vaším souhlasem bych rád použil i analytické cookies, díky kterým vidím, jak web používáte, a marketingové cookies pro měření a cílení reklamy. Poskytuje je Google. Souhlas můžete kdykoli změnit nebo odvolat přes odkaz Nastavení cookies v patičce. <a href="zasady-cookies.html">Více informací</a>',
+            acceptAllBtn: 'Přijmout vše',
+            acceptNecessaryBtn: 'Odmítnout vše',
+            showPreferencesBtn: 'Nastavení'
+          },
+          preferencesModal: {
+            title: 'Nastavení cookies',
+            acceptAllBtn: 'Přijmout vše',
+            acceptNecessaryBtn: 'Odmítnout vše',
+            savePreferencesBtn: 'Uložit výběr',
+            closeIconLabel: 'Zavřít',
+            sections: [
+              {
+                description: 'Zde si můžete vybrat, které cookies povolíte. Nezbytné cookies nelze vypnout, ostatní používám jen s vaším souhlasem. Podrobnosti najdete v <a href="zasady-cookies.html">zásadách cookies a ochrany soukromí</a>.'
+              },
+              {
+                title: 'Nezbytné cookies',
+                description: 'Zajišťují základní fungování webu a uložení vaší volby ohledně cookies (cookie cc_cookie, platnost 6 měsíců). Souhlas k nim není potřeba.',
+                linkedCategory: 'necessary'
+              },
+              {
+                title: 'Analytické cookies',
+                description: 'Pomocí Google Analytics zjišťuji, kolik lidí web navštěvuje, odkud přicházejí, jaké stránky čtou a z jakých zařízení. Údaje vyhodnocuji souhrnně a slouží mi ke zlepšování webu.',
+                linkedCategory: 'analytics',
+                cookieTable: {
+                  headers: { name: 'Název', domain: 'Poskytovatel', desc: 'Účel', exp: 'Platnost' },
+                  body: [
+                    { name: '_ga', domain: 'Google', desc: 'Rozlišení jednotlivých návštěvníků', exp: '2 roky' },
+                    { name: '_ga_*', domain: 'Google', desc: 'Uchování stavu relace', exp: '2 roky' }
+                  ]
+                }
+              },
+              {
+                title: 'Marketingové cookies',
+                description: 'Umožňují měřit výsledky reklamních kampaní, vytvářet publika pro remarketing a zobrazovat vám relevantnější reklamu u Googlu. Zahrnují i povolení předávat Googlu údaje pro reklamní účely a personalizovat reklamu.',
+                linkedCategory: 'marketing',
+                cookieTable: {
+                  headers: { name: 'Název', domain: 'Poskytovatel', desc: 'Účel', exp: 'Platnost' },
+                  body: [
+                    { name: '_gcl_*', domain: 'Google', desc: 'Měření konverzí z reklam', exp: '90 dní' }
+                  ]
+                }
+              },
+              {
+                title: 'Další informace',
+                description: 'Máte dotaz ke zpracování údajů? Napište mi na <a href="mailto:jan.bartonicek06@gmail.com">jan.bartonicek06@gmail.com</a>.'
+              }
+            ]
+          }
+        }
+      }
+    }
+  });
+})();
+  </script>
 </body>
 </html>
